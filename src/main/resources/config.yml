@@ -1,0 +1,17 @@
+# PacketPatcher config
+
+# patch most ghost liquid issues
+fix-ghost-liquids: true
+
+# split oversized chat messages to avoid kicking players
+split-oversized-chat-messages: true
+
+# trust initial conditions and stop sending packets to resync projectiles
+# disable this if you have plugins that make projectiles move in non-standard ways
+fix-projectile-desync: true
+
+# round health packets so hearts display more accurately on clients
+improve-health-rounding: true
+
+# spoof keep alive ids to patch a form of ping spoofing and hide system time
+spoof-keep-alive-ids: true
