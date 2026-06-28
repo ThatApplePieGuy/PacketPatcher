@@ -30,7 +30,13 @@ public class KeepAliveFix {
         int spoofed = ThreadLocalRandom.current().nextInt();
         IdPair pair = new IdPair(real, spoofed);
 
-        keepAlives.get().computeIfAbsent(event.getUser(), k -> new ArrayDeque<>()).add(pair);
+        Queue<IdPair> pairs = keepAlives.get().computeIfAbsent(event.getUser(), k -> new ArrayDeque<>());
+        if (pairs.size() > 100) {
+            event.getUser().closeConnection(); // client must be misbehaving
+            return;
+        }
+
+        pairs.add(pair);
         keepAlive.setId(spoofed);
         event.markForReEncode(true);
     }
