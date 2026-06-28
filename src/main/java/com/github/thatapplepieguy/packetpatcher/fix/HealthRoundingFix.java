@@ -55,23 +55,23 @@ public class HealthRoundingFix {
         float previous = lastSent.getOrDefault(user, Float.NaN);
         float rounded = roundHealth(previous, value);
 
-        lastSent.put(user, rounded);
+        lastSent.put(user, value);
         return rounded;
     }
 
     private static float roundHealth(float previousHealth, float currentHealth) {
         if (currentHealth <= 0) return 0;
 
-        float ceiled = (float) Math.ceil(currentHealth);
+        float rounded = Math.max(1, Math.round(currentHealth));
 
         boolean sameHeartDamage = !Float.isNaN(previousHealth)
                 && currentHealth < previousHealth
-                && Math.ceil(previousHealth) == ceiled;
+                && Math.round(previousHealth) == rounded;
 
         if (sameHeartDamage) {
-            ceiled = Math.nextAfter(ceiled, 0);
+            rounded = Math.nextAfter(rounded, 0);
         }
 
-        return ceiled;
+        return rounded;
     }
 }
