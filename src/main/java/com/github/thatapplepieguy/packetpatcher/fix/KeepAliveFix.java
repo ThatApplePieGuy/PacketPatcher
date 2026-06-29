@@ -6,6 +6,8 @@ import com.github.retrooper.packetevents.protocol.player.User;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientKeepAlive;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerKeepAlive;
 import com.github.thatapplepieguy.packetpatcher.route.PacketRoute;
+import com.github.thatapplepieguy.packetpatcher.util.FastThreadLocals;
+import io.netty.util.concurrent.FastThreadLocal;
 
 import java.util.ArrayDeque;
 import java.util.Map;
@@ -22,7 +24,7 @@ public class KeepAliveFix {
 
     private record IdPair(long real, int spoofed) {}
 
-    private final ThreadLocal<Map<User, Queue<IdPair>>> keepAlives = ThreadLocal.withInitial(WeakHashMap::new);
+    private final FastThreadLocal<Map<User, Queue<IdPair>>> keepAlives = FastThreadLocals.withInitial(WeakHashMap::new);
 
     @PacketRoute
     public void onKeepAlivePing(WrapperPlayServerKeepAlive keepAlive, PacketSendEvent event) {

@@ -7,6 +7,8 @@ import com.github.retrooper.packetevents.protocol.player.User;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityMetadata;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerUpdateHealth;
 import com.github.thatapplepieguy.packetpatcher.route.PacketRoute;
+import com.github.thatapplepieguy.packetpatcher.util.FastThreadLocals;
+import io.netty.util.concurrent.FastThreadLocal;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -21,8 +23,8 @@ public class HealthRoundingFix {
     private static final int HEALTH_INDEX = 6;
     private static final int ABSORPTION_INDEX = 17;
 
-    private final ThreadLocal<Map<User, Float>> lastSentHealth = ThreadLocal.withInitial(WeakHashMap::new);
-    private final ThreadLocal<Map<User, Float>> lastSentAbsorption = ThreadLocal.withInitial(WeakHashMap::new);
+    private final FastThreadLocal<Map<User, Float>> lastSentHealth = FastThreadLocals.withInitial(WeakHashMap::new);
+    private final FastThreadLocal<Map<User, Float>> lastSentAbsorption = FastThreadLocals.withInitial(WeakHashMap::new);
 
     @PacketRoute
     public void onMetadata(WrapperPlayServerEntityMetadata metadata, PacketSendEvent event) {

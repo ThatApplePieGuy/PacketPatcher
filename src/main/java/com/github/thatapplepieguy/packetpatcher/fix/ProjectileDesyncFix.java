@@ -10,6 +10,8 @@ import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEn
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityVelocity;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSpawnEntity;
 import com.github.thatapplepieguy.packetpatcher.route.PacketRoute;
+import com.github.thatapplepieguy.packetpatcher.util.FastThreadLocals;
+import io.netty.util.concurrent.FastThreadLocal;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,7 +36,7 @@ public class ProjectileDesyncFix {
             EntityTypes.FISHING_BOBBER
     );
 
-    private final ThreadLocal<Map<User,Map<Integer, Boolean>>> projectiles = ThreadLocal.withInitial(WeakHashMap::new);
+    private final FastThreadLocal<Map<User,Map<Integer, Boolean>>> projectiles = FastThreadLocals.withInitial(WeakHashMap::new);
 
     @PacketRoute
     public void onSpawn(WrapperPlayServerSpawnEntity spawn, PacketSendEvent event) {

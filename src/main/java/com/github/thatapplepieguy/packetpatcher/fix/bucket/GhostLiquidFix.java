@@ -10,6 +10,8 @@ import com.github.retrooper.packetevents.wrapper.PacketWrapper;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerBlockPlacement;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerFlying;
 import com.github.thatapplepieguy.packetpatcher.route.PacketRoute;
+import com.github.thatapplepieguy.packetpatcher.util.FastThreadLocals;
+import io.netty.util.concurrent.FastThreadLocal;
 
 import java.util.Map;
 import java.util.Set;
@@ -30,7 +32,7 @@ public class GhostLiquidFix {
             ItemTypes.LAVA_BUCKET
     );
 
-    private final ThreadLocal<Map<User, PacketWrapper<?>>> delayedPackets = ThreadLocal.withInitial(WeakHashMap::new);
+    private final FastThreadLocal<Map<User, PacketWrapper<?>>> delayedPackets = FastThreadLocals.withInitial(WeakHashMap::new);
 
     private final BucketLookStore lookStore;
 
