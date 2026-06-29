@@ -5,10 +5,7 @@ import com.github.retrooper.packetevents.protocol.entity.type.EntityType;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
 import com.github.retrooper.packetevents.protocol.player.ClientVersion;
 import com.github.retrooper.packetevents.protocol.player.User;
-import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerDestroyEntities;
-import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityTeleport;
-import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityVelocity;
-import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSpawnEntity;
+import com.github.retrooper.packetevents.wrapper.play.server.*;
 import com.github.thatapplepieguy.packetpatcher.route.PacketRoute;
 import com.github.thatapplepieguy.packetpatcher.util.FastThreadLocals;
 import io.netty.util.concurrent.FastThreadLocal;
@@ -44,17 +41,31 @@ public class ProjectileDesyncFix {
         if (event.getUser().getClientVersion().isNewerThan(ClientVersion.V_1_8)) return;
 
         if (PROJECTILES.contains(spawn.getEntityType())) {
-            projectiles.get().computeIfAbsent(event.getUser(),k -> new HashMap<>())
+            projectiles.get().computeIfAbsent(event.getUser(), k -> new HashMap<>())
                     .put(spawn.getEntityId(), false);
         }
     }
 
     @PacketRoute
     public void onTeleport(WrapperPlayServerEntityTeleport teleport, PacketSendEvent event) {
+        cancelIfTracked(teleport.getEntityId(), event);
+    }
+
+    @PacketRoute
+    public void onRelMove(WrapperPlayServerEntityRelativeMove relMove, PacketSendEvent event) {
+        cancelIfTracked(relMove.getEntityId(), event);
+    }
+
+    @PacketRoute
+    public void onRelMoveLook(WrapperPlayServerEntityRelativeMoveAndRotation relMoveLook, PacketSendEvent event) {
+        cancelIfTracked(relMoveLook.getEntityId(), event);
+    }
+
+    private void cancelIfTracked(int entityId, PacketSendEvent event) {
         if (event.getUser().getClientVersion().isNewerThan(ClientVersion.V_1_8)) return;
 
         Map<Integer, Boolean> velocitySent = projectiles.get().get(event.getUser());
-        if (velocitySent != null && velocitySent.containsKey(teleport.getEntityId())) {
+        if (velocitySent != null && velocitySent.containsKey(entityId)) {
             event.setCancelled(true);
         }
     }
